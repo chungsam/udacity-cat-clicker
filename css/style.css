@@ -1,0 +1,16 @@
+.container {
+    max-width: 996px;
+}
+
+button {
+    clear: both;
+}
+
+#cats-container {
+    display: inline-block;
+}
+
+.cat-pic {
+    max-width: 300px;
+    width: 100%;
+}
