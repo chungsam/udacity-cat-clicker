@@ -13,9 +13,6 @@ $(function () {
         },
         getAllCats: function () {
             return this.cats;
-        },
-        showHideCat: function () {
-
         }
 
     };
@@ -34,9 +31,6 @@ $(function () {
 
         addCat: function (cat) {
             model.add(cat);
-        },
-        showCat: function (cat) {
-
         }
 
     };
