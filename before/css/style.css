@@ -1,0 +1,36 @@
+.container {
+    max-width: 996px;
+    display: flex;
+}
+
+button {
+    clear: both;
+}
+
+#count-container {
+    width: 100%;
+    clear: all;
+}
+
+#cats-container {
+    width: 66.67%;
+}
+
+#cats-list-container {
+    display: inline-block;
+    float: right;
+    width: 33.33%;
+}
+
+.cat-pic {
+    max-width: 300px;
+    width: 100%;
+}
+
+.show {
+    display: block;
+}
+
+.hide {
+    display: none;
+}

@@ -1,16 +1,30 @@
 .container {
-    max-width: 996px;
+    width: 996px;
 }
 
-button {
-    clear: both;
+#cats-buttons button {
+    width: 75px;
 }
 
 #cats-container {
-    display: inline-block;
+    width: 100%;
+    float:left;
+    display: flex;
 }
 
-.cat-pic {
-    max-width: 300px;
+#cats-container div {
+    margin: 0 auto;
+    width: 33%;
+}
+
+#cats-container img {
     width: 100%;
+}
+
+.cat-img {
+    width: 100%;
+}
+
+#cats-container div.hide {
+    display: none;
 }
