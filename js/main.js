@@ -13,6 +13,14 @@ $(function () {
         },
         getAllCats: function () {
             return this.cats;
+        },
+
+        setCat: function (cat) {
+            var existingCat = this.cats.find(function (existingCat) {
+                return existingCat.id == cat.id;
+            });
+
+            existingCat = cat;
         }
 
     };
@@ -30,7 +38,11 @@ $(function () {
         },
 
         addCat: function (cat) {
-            model.add(cat);
+            model.addCat(cat);
+        },
+
+        setCat: function (cat) {
+            model.setCat(cat)
         }
 
     };
@@ -64,9 +76,49 @@ $(function () {
                 imageElem.src = cat.imgUrl;
                 imageElem.classList.add('cat-img');
 
+                var adminDiv = document.createElement('div');
+                adminDiv.classList.add('hide');
+
+                var formDiv = document.createElement('form');
+                formDiv.id = 'admin-form';
+
+                var nameInput = document.createElement('input');
+                nameInput.type = 'text';
+                nameInput.name = 'cat-name';
+                nameInput.value = cat.name;
+
+                var imgUrlInput = document.createElement('input');
+                imgUrlInput.type = 'text';
+                imgUrlInput.name = 'cat-imgUrl';
+                imgUrlInput.value = cat.imgUrl;
+
+                var countInput = document.createElement('input');
+                countInput.type = 'text';
+                countInput.name = 'cat-count';
+                countInput.value = cat.clickCount;
+
+                var submitButton = document.createElement('input');
+                submitButton.type = 'submit';
+                submitButton.name = 'save';
+                submitButton.value = 'Save';
+
+                formDiv.appendChild(document.createTextNode('Name: '));
+                formDiv.appendChild(nameInput);
+
+                formDiv.appendChild(document.createTextNode('Url: '));
+                formDiv.appendChild(imgUrlInput);
+
+                formDiv.appendChild(document.createTextNode('Count: '));
+                formDiv.appendChild(countInput);
+
+                formDiv.appendChild(submitButton);
+
                 catDiv.appendChild(nameElem);
                 catDiv.appendChild(countElem);
                 catDiv.appendChild(imageElem);
+
+                adminDiv.appendChild(formDiv);
+                catDiv.appendChild(adminDiv);
 
                 view.$buttonsContainer.append(buttonElem);
                 view.$catsContainer.append(catDiv);
@@ -93,7 +145,7 @@ $(function () {
                     var cat = controller.getCat(e.target.parentElement.id)
                     cat.clickCount++;
                 }
-                
+
                 view.render();
             });
 
@@ -105,8 +157,8 @@ $(function () {
 
 
             this.$buttonsContainer.append(resetButton);
-            $('#reset-button').click(function(e){
-                view.cats.forEach(function(cat){
+            $('#reset-button').click(function (e) {
+                view.cats.forEach(function (cat) {
                     cat.clickCount = 0;
                 });
 
@@ -126,16 +178,19 @@ $(function () {
     };
 
     model.addCat({
+        id: 1,
         name: 'Alazzam',
         imgUrl: 'images/cat1.jpg',
         clickCount: 0
     });
     model.addCat({
+        id: 2,
         name: 'Bruno',
         imgUrl: 'images/cat2.jpeg',
         clickCount: 0
     });
     model.addCat({
+        id: 3,
         name: 'Coolio',
         imgUrl: 'images/cat3.jpg',
         clickCount: 0

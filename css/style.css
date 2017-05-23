@@ -9,16 +9,20 @@
 #cats-container {
     width: 100%;
     float:left;
-    display: flex;
+    /*display: flex;*/
 }
 
 #cats-container div {
     margin: 0 auto;
-    width: 33%;
+    width: 80%;
 }
 
 #cats-container img {
     width: 100%;
+}
+
+#admin-form input {
+    display: block;
 }
 
 .cat-img {
