@@ -3,10 +3,8 @@ $(function () {
     var model = {
 
         cats: [],
-        addCat: function (cat) {
-            this.cats.push(cat);
-        },
-        getCat: function (catName) {
+        currentCat: {},
+        getCatByName: function (catName) {
             return this.cats.find(function (cat) {
                 return cat.name === catName;
             })
@@ -14,14 +12,25 @@ $(function () {
         getAllCats: function () {
             return this.cats;
         },
+        getCurrentCat: function () {
+            return this.currentCat;
+        },
+        setCurrentCat: function (catName) {
+            var existingCat = this.getCatByName(catName);
 
-        setCat: function (cat) {
-            var existingCat = this.cats.find(function (existingCat) {
+            this.currentCat = existingCat;
+        },
+        saveCat: function (cat) {
+            var existingCat = model.cats.find(function (existingCat) {
                 return existingCat.id == cat.id;
             });
 
             existingCat = cat;
+        },
+        addCat: function(cat) {
+            this.cats.push(cat);
         }
+
 
     };
 
@@ -33,16 +42,20 @@ $(function () {
         getAllCats: function () {
             return model.getAllCats()
         },
-        getCat: function (catName) {
-            return model.getCat(catName);
+        getCurrentCat: function () {
+            return model.getCurrentCat();
         },
-
-        addCat: function (cat) {
+        getCatByName: function (catName) {
+            return model.getCatByName(catName);
+        },
+        setCurrentCat: function (catName) {
+            model.setCurrentCat(catName);
+        },
+        addCat: function(cat) {
             model.addCat(cat);
         },
-
-        setCat: function (cat) {
-            model.setCat(cat)
+        saveCat: function (cat) {
+            model.saveCat(cat);
         }
 
     };
@@ -52,7 +65,12 @@ $(function () {
         init: function () {
             this.cats = controller.getAllCats();
             this.$buttonsContainer = $('#cats-buttons');
+            this.$adminButtonsContainer = $('#admin-buttons');
             this.$catsContainer = $('#cats-container');
+            this.currentCat = controller.getCurrentCat();
+            
+            // on first page load render first cat
+            controller.setCurrentCat(this.cats[0].name);
 
             // render all added cats
             controller.getAllCats().forEach(function (cat) {
@@ -62,87 +80,91 @@ $(function () {
                 buttonElem.type = 'button';
                 buttonElem.innerText = cat.name;
 
-                var catDiv = document.createElement('div');
-                catDiv.classList.add('hide');
-                catDiv.id = cat.name;
-
-                var nameElem = document.createElement('h2');
-                nameElem.innerText = 'Name: ' + cat.name;
-
-                var countElem = document.createElement('h3');
-                countElem.innerText = 'Count: ' + cat.clickCount;
-
-                var imageElem = document.createElement('img');
-                imageElem.src = cat.imgUrl;
-                imageElem.classList.add('cat-img');
-
-                var adminDiv = document.createElement('div');
-                adminDiv.classList.add('hide');
-
-                var formDiv = document.createElement('form');
-                formDiv.id = 'admin-form';
-
-                var nameInput = document.createElement('input');
-                nameInput.type = 'text';
-                nameInput.name = 'cat-name';
-                nameInput.value = cat.name;
-
-                var imgUrlInput = document.createElement('input');
-                imgUrlInput.type = 'text';
-                imgUrlInput.name = 'cat-imgUrl';
-                imgUrlInput.value = cat.imgUrl;
-
-                var countInput = document.createElement('input');
-                countInput.type = 'text';
-                countInput.name = 'cat-count';
-                countInput.value = cat.clickCount;
-
-                var submitButton = document.createElement('input');
-                submitButton.type = 'submit';
-                submitButton.name = 'save';
-                submitButton.value = 'Save';
-
-                formDiv.appendChild(document.createTextNode('Name: '));
-                formDiv.appendChild(nameInput);
-
-                formDiv.appendChild(document.createTextNode('Url: '));
-                formDiv.appendChild(imgUrlInput);
-
-                formDiv.appendChild(document.createTextNode('Count: '));
-                formDiv.appendChild(countInput);
-
-                formDiv.appendChild(submitButton);
-
-                catDiv.appendChild(nameElem);
-                catDiv.appendChild(countElem);
-                catDiv.appendChild(imageElem);
-
-                adminDiv.appendChild(formDiv);
-                catDiv.appendChild(adminDiv);
-
                 view.$buttonsContainer.append(buttonElem);
-                view.$catsContainer.append(catDiv);
 
             });
 
+            // create container for current cat
+            cat = controller.getCurrentCat();
+
+            var catDiv = document.createElement('div');
+            catDiv.id = 'cat-div';
+
+            var nameElem = document.createElement('h2');
+            nameElem.id = 'cat-name';
+            nameElem.innerText = 'Name: ' + cat.name;
+
+            var countElem = document.createElement('h3');
+            countElem.id = 'cat-count';
+            countElem.innerText = 'Count: ' + cat.clickCount;
+
+            var imageElem = document.createElement('img');
+            imageElem.src = cat.imgUrl;
+            imageElem.id = 'cat-img';
+
+            view.$catsContainer.append(catDiv);
+
+            // create admin form and fields
+            var adminDiv = document.createElement('div');
+            adminDiv.id = 'admin-div';
+
+            // hide admin part on init
+            adminDiv.classList.add('hide');
+
+            var formDiv = document.createElement('form');
+            formDiv.id = 'admin-form';
+
+            var nameInput = document.createElement('input');
+            nameInput.type = 'text';
+            nameInput.name = 'cat-name';
+            nameInput.value = cat.name;
+
+            var imgUrlInput = document.createElement('input');
+            imgUrlInput.type = 'text';
+            imgUrlInput.name = 'cat-imgUrl';
+            imgUrlInput.value = cat.imgUrl;
+
+            var countInput = document.createElement('input');
+            countInput.type = 'text';
+            countInput.name = 'cat-count';
+            countInput.value = cat.clickCount;
+
+            var submitButton = document.createElement('button');
+            submitButton.id = 'submit-button';
+            submitButton.type = 'button';
+            submitButton.name = 'save';
+            submitButton.innerText = 'Save';
+
+            formDiv.appendChild(document.createTextNode('Name: '));
+            formDiv.appendChild(nameInput);
+
+            formDiv.appendChild(document.createTextNode('Url: '));
+            formDiv.appendChild(imgUrlInput);
+
+            formDiv.appendChild(document.createTextNode('Count: '));
+            formDiv.appendChild(countInput);
+
+            formDiv.appendChild(submitButton);
+
+            catDiv.appendChild(nameElem);
+            catDiv.appendChild(countElem);
+            catDiv.appendChild(imageElem);
+
+            adminDiv.appendChild(formDiv);
+            catDiv.appendChild(adminDiv);
+
             // add event listener to buttons to show/hide cats
             this.$buttonsContainer.click(function (e) {
-                if (e.target.tagName == 'BUTTON') {
-                    var $divElem = $('#' + e.target.innerText);
 
-                    if ($divElem.hasClass('hide')) {
-                        $divElem.removeClass('hide');
+                controller.setCurrentCat(e.target.innerText);
 
-                    } else {
-                        $divElem.addClass('hide');
-                    }
-                };
+                view.render();
             });
 
             // add event listener to cat pics to increment count
             this.$catsContainer.click(function (e) {
                 if (e.target.tagName == 'IMG') {
-                    var cat = controller.getCat(e.target.parentElement.id)
+                    var cat = controller.getCatByName(view.currentCat.name)
                     cat.clickCount++;
                 }
 
@@ -155,8 +177,9 @@ $(function () {
             resetButton.id = 'reset-button';
             resetButton.innerText = 'Reset';
 
+            this.$adminButtonsContainer.append(resetButton);
 
-            this.$buttonsContainer.append(resetButton);
+            // add event listener to reset-button to reset all counts
             $('#reset-button').click(function (e) {
                 view.cats.forEach(function (cat) {
                     cat.clickCount = 0;
@@ -165,18 +188,82 @@ $(function () {
                 view.render();
             })
 
+            // add button to show/hide admin details
+            var adminButton = document.createElement('button');
+            adminButton.type = 'button';
+            adminButton.id = 'admin-button';
+            adminButton.innerText = 'Admin';
+
+            this.$adminButtonsContainer.append(adminButton);
+
+            // add event listener to admin-button to show/hide admin area for cat
+            var $adminDiv = $('#admin-div')
+            var $adminButton = $('#admin-button');
+
+            $adminButton.click(function (e) {
+                if ($adminDiv.hasClass('hide')) {
+                    $adminDiv.removeClass('hide')
+                } else {
+                    $adminDiv.addClass('hide');
+                }
+
+                view.render();
+            });
+
+            // add event listener to admin submit button to change cat data
+            var $adminSubmit = $('#submit-button');
+
+            $adminSubmit.click(function (e) {
+                var cat = controller.getCurrentCat();
+                cat.name = nameInput.value;
+                cat.imgUrl = imgUrlInput.value;
+                cat.clickCount = countInput.value;
+
+                controller.saveCat(cat);
+
+                view.render();
+            })
+
+
+
             view.render();
         },
 
         render: function () {
+            this.currentCat = controller.getCurrentCat();
+            var cat = controller.getCurrentCat();
+            var cats = controller.getAllCats();
+
+            // render main details for cat
+            var $catDivElem = $('#cats-container > div');
+            //$catDivElem.attr('id', cat.name);
+            $('#cat-name').text('Name: ' + cat.name);
+            $('#cat-count').text('Count: ' + cat.clickCount);
+            $('#cat-img').attr('src', cat.imgUrl);
+
+            // render admin details for cat
+            var $adminFormElements = $('#admin-form').children();
+            $adminFormElements.filter('input[name=cat-name]').val(cat.name);
+            $adminFormElements.filter('input[name=cat-imgUrl]').val(cat.imgUrl);
+            $adminFormElements.filter('input[name=cat-count]').val(cat.clickCount);
+
             // refresh cat counts
-            view.cats.forEach(function (cat) {
-                var $countElem = $('#' + cat.name + '>h3');
-                $countElem.text('Count: ' + cat.clickCount);
-            })
+            var $countElem = $('#cat-count');
+            $countElem.text('Count: ' + cat.clickCount);
+
+            // refresh buttons
+            var catButtons = Array.prototype.slice.call(
+                document.getElementById('cats-buttons')
+                .querySelectorAll('button'));
+
+            for (i = 0; i < cats.length; i++) {
+                catButtons[i].innerText = cats[i].name;
+            }
+
         }
     };
 
+    // seed some cats
     model.addCat({
         id: 1,
         name: 'Alazzam',

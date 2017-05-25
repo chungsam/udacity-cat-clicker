@@ -1,5 +1,6 @@
 .container {
     width: 996px;
+    margin: 0 auto;
 }
 
 #cats-buttons button {
@@ -8,16 +9,19 @@
 
 #cats-container {
     width: 100%;
-    float:left;
-    /*display: flex;*/
 }
 
-#cats-container div {
+#cats-container div:first-child {
     margin: 0 auto;
     width: 80%;
+    display: inline-block;
 }
 
 #cats-container img {
+    width: 50%;
+}
+
+.cat-img {
     width: 100%;
 }
 
@@ -25,10 +29,6 @@
     display: block;
 }
 
-.cat-img {
-    width: 100%;
-}
-
-#cats-container div.hide {
+.hide {
     display: none;
 }
